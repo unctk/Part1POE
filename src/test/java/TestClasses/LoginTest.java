@@ -56,4 +56,42 @@ public class LoginTest {
         
         
     }
+    
+    @Test
+    public void testCellPhoneNumberCorrectlyFormatted() {
+        // Test Data: +27838968976
+        boolean actual = Login.checkCellPhoneNumber("+27838968976");
+        assertTrue(actual, "Expect a correctly formatted cell phone number "
+                + "to return true");
+    }
+ 
+    @Test
+    public void testCellPhoneNumberIncorrectlyFormatted() {
+        // Test Data: 08966553
+        boolean actual = Login.checkCellPhoneNumber("08966553");
+        assertFalse(actual, "Expect an incorrectly formatted cell phone "
+                + "number to return false");
+    }
+ 
+    @Test
+    public void testLoginSuccessful() {
+        login.registerUser("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+        boolean actual = login.loginUser("kyl_1", "Ch&&sec@ke99!");
+        assertTrue(actual, "Expect login to succeed with the correct "
+                + "username and password");
+    }
+ 
+    @Test
+    public void testLoginFailed() {
+        login.registerUser("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+        boolean actual = login.loginUser("kyl_1", "wrongPassword1!");
+        assertFalse(actual, "Expect login to fail with an incorrect password");
+    }
+    
+    
+    
+    
+    
+    
+    
 }
