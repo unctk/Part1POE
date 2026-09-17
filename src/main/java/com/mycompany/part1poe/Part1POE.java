@@ -80,5 +80,26 @@ public class Part1POE {
             }   
         }
         //Storing of details against Login class
+        String regResult = login.registerUser(firstName, lastName, username, password, cellNumber);
+        
+        System.out.println();
+        System.out.print(regResult);
+        
+        
+        //user must use same username and password to login
+         System.out.println();
+        System.out.print("Login");
+        
+        
+         System.out.print("Please enter your username: ");
+           String loginUsername = input.nextLine();
+           
+        System.out.print("Please enter your password: ");
+           String loginPassword = input.nextLine();
+           
+           boolean loginSuccess =login.loginUser(loginUsername, loginPassword); 
+         System.out.println(login.returnLoginStatus(loginSuccess));
+        
+        input.close();
 }
 }
