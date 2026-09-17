@@ -64,5 +64,21 @@ public class Part1POE {
               
            }
        }
+       //Cell phone number validation
+        while (true) {
+           System.out.print("Please enter your South African cell phone number (include +27)" + ", example +27714224567: ");
+           cellNumber = input.nextLine();
+           
+             if (login.checkCellPhoneNumber(cellNumber)) {
+            System.out.println("Cell phone number successfully captured.");
+              break;
+            }
+             
+             else {
+            System.out.println("Cell phone number is incorrectly formatted or does not contain international code." + "Try again");
+            
+            }   
+        }
+        //Storing of details against Login class
 }
 }
