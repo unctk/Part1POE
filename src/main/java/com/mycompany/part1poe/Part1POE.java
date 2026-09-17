@@ -88,7 +88,7 @@ public class Part1POE {
         
         //user must use same username and password to login
          System.out.println();
-        System.out.print("Login");
+        System.out.println("-Login-");
         
         
          System.out.print("Please enter your username: ");
