@@ -32,5 +32,37 @@ public class Part1POE {
        System.out.print("Please enter your last name: ");
        lastName = input.nextLine();
        
+       
+       //username validation
+       while (true) {
+           System.out.print("Please enter your username: ");
+           username = input.nextLine();
+           
+             if (login.checkUserName(username)) {
+            System.out.println("Username successfully captured.");
+              break;
+       }
+             else {
+            System.out.println("Username is not correctly formatted; please "+ "ensure that your username contains an underscore and "+ "is no more than five characters in length.");
+                               
+            System.out.println("");
+       }
+             
     }
+       //password validation
+       while (true) {
+           System.out.print("Please enter your password: ");
+           password = input.nextLine();
+           
+           if (login.checkPasswordComplexity(password)) {
+              System.out.println("Password successfully captured.");
+               break;
+           }
+           else {
+               System.out.println("Password is not correctly formatted; please " + "ensure that the password contains at least eight characters, " + " a capital letter, a number, and a special character.");
+               System.out.println();
+              
+           }
+       }
+}
 }
