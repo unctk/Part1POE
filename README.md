@@ -30,13 +30,9 @@ Each value is then validated using a set of formatting constraints. The user is 
    **Password**:  Must be at least 8 characters long, and contain at least one capital letter, one number, and one special character 
    **Cell phone number**: Must contain the South African international country code (`+27`) followed by up to 9 digits 
   
-   ## Project Structure
-   
-
-
    ## Classes
 
-   ### 'Login'
+   ### Login
     Handles all registration and login logic, independent of the console interface, so it can be unit tested directly.
     
   
@@ -47,7 +43,7 @@ Each value is then validated using a set of formatting constraints. The user is 
  loginUser - 'boolean' - Verifies login credentials against the registered details 
  returnLoginStatus - 'String' - Returns the correct message for a login attempt's outcome 
 
-   ### 'POEPart1'
+   ### POEPart1
   The console application. Prompts the user through registration (looping on each field until it's valid), then prompts for login and displays the result.
    
    # How to Run
