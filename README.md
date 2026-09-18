@@ -35,13 +35,12 @@ Each value is then validated using a set of formatting constraints. The user is 
    ### Login
     Handles all registration and login logic, independent of the console interface, so it can be unit tested directly.
     
-  
- checkUserName - 'Boolean' - Validates the username format 
- checkPasswordComplexity' - 'boolean' - Validates password complexity 
- checkCellPhoneNumber' - 'boolean' - Validates the cell number format using a regular expression 
- registerUser - 'String' - Validates all fields and registers the user if valid; returns the relevant status message 
- loginUser - 'boolean' - Verifies login credentials against the registered details 
- returnLoginStatus - 'String' - Returns the correct message for a login attempt's outcome 
+    -checkUserName - 'Boolean' - Validates the username format 
+    -checkPasswordComplexity' - 'boolean' - Validates password complexity 
+    -checkCellPhoneNumber' - 'boolean' - Validates the cell number format using a regular expression 
+    -registerUser - 'String' - Validates all fields and registers the user if valid; returns the relevant status message 
+    -loginUser - 'boolean' - Verifies login credentials against the registered details 
+    -returnLoginStatus - 'String' - Returns the correct message for a login attempt's outcome 
 
    ### POEPart1
   The console application. Prompts the user through registration (looping on each field until it's valid), then prompts for login and displays the result.
