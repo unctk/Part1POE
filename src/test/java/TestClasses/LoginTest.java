@@ -87,11 +87,62 @@ public class LoginTest {
         boolean actual = login.loginUser("kyl_1", "wrongPassword1!");
         assertFalse(actual, "Expect login to fail with an incorrect password");
     }
-    
-    
-    
-    
-    
-    
-    
+    //Test (assertEquals) - checking the String-returning methods: registerUser and returnLoginStatus.
+  
+    @Test
+    public void testRegisterUser_PasswordDoesNotMeetComplexity() {
+        String expected = "Password is not correctly formatted; please "
+                + "ensure that the password contains at least eight "
+                + "characters,  a capital letter, a number, and a special "
+                + "character.";
+        String actual = login.registerUser("Kyle", "Smith", "kyl_1",
+                "password", "+27838968976");
+        assertEquals(expected, actual, "Expect registerUser() to return the "
+                + "password error message when the password is invalid");
+    }
+ 
+    @Test
+    public void testRegisterUser_CellNumberIncorrectlyFormatted() {
+        String expected = "Cell number is incorrectly formatted or does "
+                + "not contain an international code; please correct the "
+                + "number and try again.";
+        String actual = login.registerUser("Kyle", "Smith", "kyl_1",
+                "Ch&&sec@ke99!", "08966553");
+        assertEquals(expected, actual, "Expect registerUser() to return the "
+                + "cell number error message when the number is invalid");
+    }
+ 
+    @Test
+    public void testRegisterUser_AllFieldsValid() {
+        String expected = "Username successfully captured.\n"
+                + "Password successfully captured.\n"
+                + "Cell number successfully captured.\n"
+                + "Registration successful!";
+        String actual = login.registerUser("Kyle", "Smith", "kyl_1",
+                "Ch&&sec@ke99!", "+27838968976");
+        assertEquals(expected, actual, "Expect registerUser() to return the "
+                + "success message when all fields are valid");
+    }
+ 
+    @Test
+    public void testReturnLoginStatus_Successful() {
+        login.registerUser("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+        boolean loginResult = login.loginUser("kyl_1", "Ch&&sec@ke99!");
+ 
+        String expected = "Welcome Kyle, Smith it is great to see you again.";
+        String actual = login.returnLoginStatus(loginResult);
+        assertEquals(expected, actual, "Expect the welcome message after a "
+                + "successful login");
+    }
+ 
+    @Test
+    public void testReturnLoginStatus_Failed() {
+        login.registerUser("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+        boolean loginResult = login.loginUser("kyl_1", "wrongPassword1!");
+ 
+        String expected = "Username or password incorrect, please try again.";
+        String actual = login.returnLoginStatus(loginResult);
+        assertEquals(expected, actual, "Expect the error message after a "
+                + "failed login");
+    }
 }
