@@ -25,12 +25,7 @@ public class Login {
         if (username == null) {
             return false;
         }
-        if (username.contains("_") && username.length() <= 5) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return username.contains("_") && username.length() <= 5;
     }        
      
     
@@ -41,12 +36,7 @@ public class Login {
         if (cellNumber == null || cellNumber.isEmpty()) {
             return false;
         }
-        if (Pattern.matches(pattern, cellNumber)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return Pattern.matches(pattern, cellNumber);
     }        
       // checks if password is at least 8 char long and has capital letter, number ans special char
     public static boolean checkPasswordComplexity(String password) {
