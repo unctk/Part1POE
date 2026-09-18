@@ -4,6 +4,7 @@
  */
 package TestClasses;
 
+import com.mycompany.part1poe.Login;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -87,8 +88,20 @@ public class LoginTest {
         boolean actual = login.loginUser("kyl_1", "wrongPassword1!");
         assertFalse(actual, "Expect login to fail with an incorrect password");
     }
+    
     //Test (assertEquals) - checking the String-returning methods: registerUser and returnLoginStatus.
   
+     @Test
+    public void testRegisterUser_UsernameIncorrectlyFormatted() {
+        String expected = "Username is not correctly formatted; please "
+                + "ensure that your username contains an underscore and "
+                + "is no more than five characters in length.";
+        String actual = login.registerUser("Kyle", "Smith", "kyle!!!!!!",
+                "Ch&&sec@ke99!", "+27838968976");
+        assertEquals(expected, actual, "Expect registerUser() to return the "
+                + "username error message when the username is invalid");
+    }
+ 
     @Test
     public void testRegisterUser_PasswordDoesNotMeetComplexity() {
         String expected = "Password is not correctly formatted; please "
