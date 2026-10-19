@@ -168,7 +168,7 @@ public class Part1POE {
                     System.out.println("Message: " + message.getMessageText());
                 }
              } 
-                messageEntered = true;
+                messagesEntered = true;
         }
         else if (choice.equals("2")){
             System.out.println("Coming Soon.");
