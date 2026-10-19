@@ -120,7 +120,7 @@ public class Part1POE {
         while (true) {
             System.out.println();
             System.out.println("1) Send Messages");
-            System.out.println("2) Show recently sent messages");
+            System.out.println("2) Coming Soon");
             System.out.println("3) Quit");
             System.out.print("Choose an option: ");
             String choice = input.nextLine().trim();
@@ -131,7 +131,21 @@ public class Part1POE {
               continue;
             }
 
-    
+            // Recipient
+            // Checked and reported, but does not block the user from continuing - the message can still be created, sent, stored or disregarded either way.
+            System.out.print("Enter recipient cell number: ");
+             String recipient = input.nextLine();
+             System.out.println(Message.checkRecipientCell(recipient));
+             
+             //Message text
+             System.out.print("Enter your message: ");
+             String messageText = input.nextLine();
+             System.out.println(Message.checkMessageLength(messageText));
+             
+             Message message = new Message (recipient, messageText);
+             System.out.println(message.checkMessageIDCreated());
+             messagesEntered++;
+             
     
     
     
