@@ -146,11 +146,39 @@ public class Part1POE {
              System.out.println(message.checkMessageIDCreated());
              messagesEntered++;
              
+             // Send/ Store/ Disregard
+            System.out.println("Send Message");
+            System.out.println("Disregard Message");
+            System.out.println("Store Message to send later");
+            System.out.print("Choose an option (send/store/disregard): ");
+             String sendChoice = input.nextLine().trim();
+             
+             String result = message.sentMessage(sendChoice);
+             System.out.println(result);
+             
+             if (sendChoice.equalsIgnoreCase("send")) {
+                    System.out.println();
+                    System.out.println("Message ID: " + message.getMessageID());
+                    System.out.println("Message Hash: " + message.getMessageHash());
+                    System.out.println("Recipient: " + message.getRecipient());
+                    System.out.println("Message: " + message.getMessageText());
+                }
     
-    
-    
-    
-    
-    
-    
-}
+             } 
+        else if (choice.equals("2")){
+            System.out.println("Coming Soon.");
+            
+        }
+        else if (choice.equals("3")) {
+            System.out.println();
+            System.out.println("Total messages sent: " + Message.returnTotalMessages());
+            break;      
+        }
+        
+        else {
+            System.out.println("Please choose option 1, 2 or 3.");
+        }
+      } 
+    }
+  }
+        
