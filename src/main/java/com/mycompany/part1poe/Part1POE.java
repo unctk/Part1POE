@@ -120,7 +120,7 @@ public class Part1POE {
         while (true) {
             System.out.println();
             System.out.println("1) Send Messages");
-            System.out.println("2) Coming Soon");
+            System.out.println("2) Show recently sent messages");
             System.out.println("3) Quit");
             System.out.print("Choose an option: ");
             String choice = input.nextLine().trim();
