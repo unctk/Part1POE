@@ -115,7 +115,7 @@ public class Part1POE {
         
         System.out.print("How many messages would you like to enter? ");
         int numMessages = Integer.parseInt(input.nextLine().trim());
-        int messagesEntered = 0;
+        boolean messagesEntered = false;
     
         while (true) {
             System.out.println();
@@ -126,11 +126,16 @@ public class Part1POE {
             String choice = input.nextLine().trim();
             
         if (choice.equals("1")) {
-            if (messagesEntered >= numMessages) {
+            if (messagesEntered ) {
               System.out.println("You have already entered your "  + "chosen number of messages.");
               continue;
             }
-
+            
+             // The for loop counter (i) is used as the message number, so it increments each time the loop runs.
+                for (int i = 0; i < numMessages; i++) {
+                    System.out.println();
+                    System.out.println("Message " + (i + 1) + " of " + numMessages);
+            
             // Recipient
             // Checked and reported, but does not block the user from continuing - the message can still be created, sent, stored or disregarded either way.
             System.out.print("Enter recipient cell number: ");
@@ -142,9 +147,9 @@ public class Part1POE {
              String messageText = input.nextLine();
              System.out.println(Message.checkMessageLength(messageText));
              
-             Message message = new Message (recipient, messageText);
+             Message message = new Message (i, recipient, messageText);
              System.out.println(message.checkMessageIDCreated());
-             messagesEntered++;
+             
              
              // Send/ Store/ Disregard
             System.out.println("Send Message");
@@ -153,8 +158,7 @@ public class Part1POE {
             System.out.print("Choose an option (send/store/disregard): ");
              String sendChoice = input.nextLine().trim();
              
-             String result = message.sentMessage(sendChoice);
-             System.out.println(result);
+             System.out.println(message.sentMessage(sendChoice));
              
              if (sendChoice.equalsIgnoreCase("send")) {
                     System.out.println();
@@ -163,8 +167,9 @@ public class Part1POE {
                     System.out.println("Recipient: " + message.getRecipient());
                     System.out.println("Message: " + message.getMessageText());
                 }
-    
              } 
+                messageEntered = true;
+        }
         else if (choice.equals("2")){
             System.out.println("Coming Soon.");
             

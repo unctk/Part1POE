@@ -29,7 +29,7 @@ public class Message {
     private String messageText;
     private String messageHash;
     
-    public Message(String recipient, String messageText) {
+    public Message(int i, String recipient, String messageText) {
         this.recipient = recipient;
         this.messageText = messageText;
         this.messageID = generateMessageID();

@@ -86,7 +86,7 @@ public class MessageTest {
 
     @Test
     public void testMessageIDCreated() {
-        Message message = new Message("+27718693002",
+        Message message = new Message(i, "+27718693002",
                 "Hi Mike, can you join us for dinner tonight?");
 
         String expected = "Message ID generated: " + message.getMessageID();
@@ -98,7 +98,7 @@ public class MessageTest {
 
     @Test
     public void testMessageSent_UserSelectedSend() {
-        Message message = new Message("+27718693002",
+        Message message = new Message(i, "+27718693002",
                 "Hi Mike, can you join us for dinner tonight?");
 
         String expected = "Message successfully sent.";
@@ -108,7 +108,7 @@ public class MessageTest {
     
     @Test
     public void testMessageSent_UserSelectedDisregard() {
-        Message message = new Message("08575975889",
+        Message message = new Message(i, "08575975889",
                 "Hi Keegan, did you receive the payment?");
 
         String expected = "Press 0 to delete the message.";
@@ -118,7 +118,7 @@ public class MessageTest {
     
      @Test
     public void testMessageSent_UserSelectedStore() {
-        Message message = new Message("+27821234567",
+        Message message = new Message(i, "+27821234567",
                 "Testing the store feature");
 
         String expected = "Message successfully stored.";
