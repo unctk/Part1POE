@@ -18,23 +18,18 @@ public class Message {
     
     // Keeps every message that was actually chosen to be SENT during this run of the program, so printMessages() can list them and returnTotalMessages() can count them.
     private static List<Message> sentMessages = new ArrayList<>();
-    
-     // Counts messages as they are CREATED (not just sent) - this is the "Num messages sent" value the rubric describes as starting at a
-    // number and auto-incrementing as more messages are entered. It is used as the message number inside the message hash.
-    private static int messageCounter = 0;
-    
+   
     private String messageID;
     private int messageNumber;
     private String recipient;
     private String messageText;
     private String messageHash;
     
-    public Message(int i, String recipient, String messageText) {
+    public Message(int messageNumber, String recipient, String messageText) {
+        this.messageNumber = messageNumber;
         this.recipient = recipient;
         this.messageText = messageText;
         this.messageID = generateMessageID();
-        this.messageNumber = messageCounter;
-        messageCounter++;
         this.messageHash = createMessageHash(this.messageID, this.messageNumber, this.messageText);
     }
     
@@ -145,7 +140,6 @@ public class Message {
     // Resets all static state - used between JUnit tests so one test's messages don't leak into another's counts.
     public static void resetForTesting() {
         sentMessages.clear();
-        messageCounter = 0;
     }
     
     public String getMessageID() {
