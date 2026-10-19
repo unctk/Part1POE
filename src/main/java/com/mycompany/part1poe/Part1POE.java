@@ -100,6 +100,43 @@ public class Part1POE {
            boolean loginSuccess =login.loginUser(loginUsername, loginPassword); 
          System.out.println(login.returnLoginStatus(loginSuccess));
         
-        input.close();
+        //Part 2: users should be able to send messages if they have logged in successfully
+        if (loginSuccess) {
+            runQuickChat(input);
+        }
+         
+         input.close();
 }
+    //Part 2 - Sending Messages.
+    //Runs the QuickChat menu loop: lets the user send, view, or quit, capped at the number of messages they choose to enter at the start.
+    private static void runQuickChat (Scanner input) {
+        System.out.println();
+        System.out.println("Welcome to QuickChat.");
+        
+        System.out.print("How many messages would you like to enter? ");
+        int numMessages = Integer.parseInt(input.nextLine().trim());
+        int messagesEntered = 0;
+    
+        while (true) {
+            System.out.println();
+            System.out.println("1) Send Messages");
+            System.out.println("2) Show recently sent messages");
+            System.out.println("3) Quit");
+            System.out.print("Choose an option: ");
+            String choice = input.nextLine().trim();
+            
+        if (choice.equals("1")) {
+            if (messagesEntered >= numMessages) {
+              System.out.println("You have already entered your "  + "chosen number of messages.");
+              continue;
+            }
+
+    
+    
+    
+    
+    
+    
+    
+    
 }
