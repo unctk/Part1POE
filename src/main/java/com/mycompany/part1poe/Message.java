@@ -109,6 +109,63 @@ public class Message {
         }
        }
      
+     //// Own defined storeMessage() method. Appends this message to messages.json as a simple JSON array entry.
+    //  https://www.baeldung.com/java-json
+     public void storeMessage() {
+         String json = "{" + "\"messageID\":\"" + messageID + "\","
+                    + "\"messageNumber\":" + messageNumber + ","
+                    + "\"recipient\":\"" + recipient + "\","
+                    + "\"message\":\"" + messageText.replace("\"", "\\\"") + "\","
+                    + "\"messageHash\":\"" + messageHash + "\"" + "}";
+         
+         try (FileWriter writer = new FileWriter("message.json", true)) {
+              writer.write(json + System.lineSeparator());
+         }
+         catch (IOException e) {
+             System.out.println("Could not store message to JSON file: " + e.getMessage());
+         }
+     }
     
+     // Returns the details of every message that was sent while the program is running, in the order: Message ID, Message Hash, Recipient, Message.
+    public static String printMessages() {
+        StringBuilder sb = new StringBuilder();
+        for (Message m: sentMessages) {
+            sb.append("Message ID: ").append(m.messageID).append("\n");
+            sb.append("Message Hash: ").append(m.messageHash).append("\n");
+            sb.append("Recipient: ").append(m.recipient).append("\n");
+            sb.append("Message: ").append(m.messageText).append("\n\n");
+        }
+        return sb.toString();
+    }
+    // Returns the total number of messages sent.
+    public static int returnTotalMessages() {
+        return sentMessages.size();
+    }
     
+    // Resets all static state - used between JUnit tests so one test's messages don't leak into another's counts.
+    public static void resetForTesting() {
+        sentMessages.clear();
+        messageCounter = 0;
+    }
+    
+    public String getMessageID() {
+        return messageID;
+    }
+    
+    public int getMessageNumber() {
+        return messageNumber;
+    }
+    
+    public String getRecipient() {
+        return recipient;
+    }
+    
+    public String getMessageText() {
+        return messageText;
+    }
+    
+    public String getMessageHash() {
+        return messageHash;
+        
+    }
 }
