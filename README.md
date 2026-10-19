@@ -78,32 +78,105 @@ Messages chosen to be stored are appended to a `messages.json` file in the folde
 ```json
 {"messageID":"4832643602","messageNumber":0,"recipient":"+27821234567","message":"Test message","messageHash":"48:0:TESTMESSAGE"}
 ```
-   ## Classes
+## Project Structure
 
-   ### Login
-    Handles all registration and login logic, independent of the console interface, so it can be unit tested directly.
-    
-    -checkUserName - 'Boolean' - Validates the username format 
-    -checkPasswordComplexity' - 'boolean' - Validates password complexity 
-    -checkCellPhoneNumber' - 'boolean' - Validates the cell number format using a regular expression 
-    -registerUser - 'String' - Validates all fields and registers the user if valid; returns the relevant status message 
-    -loginUser - 'boolean' - Verifies login credentials against the registered details 
-    -returnLoginStatus - 'String' - Returns the correct message for a login attempt's outcome 
+> The project was renamed to `Part1POE`, so the package is `com.mycompany.part1poe`. Make sure the `package` line in every `.java` file matches the folder it sits in.
 
-   ### POEPart1
-  The console application. Prompts the user through registration (looping on each field until it's valid), then prompts for login and displays the result.
-   
-   # How to Run
+```
+Part1POE/
+├── pom.xml
+├── .github/
+│   └── workflows/
+│       └── maven.yml          # GitHub Actions: runs the tests automatically
+└── src/
+    ├── main/
+    │   └── java/
+    │       └── com/mycompany/part1poe/
+    │           ├── Login.java       # Part 1: registration & login logic
+    │           ├── Message.java     # Part 2: message creation, hashing, sending, storing
+    │           └── Part1POE.java    # Console application entry point
+    └── test/
+        └── java/
+            └── com/mycompany/part1poe/
+                ├── LoginTest.java   # Part 1 JUnit 5 tests
+                └── MessageTest.java # Part 2 JUnit 5 tests
+```
+   ## Class Design
 
-**Requirements:**  NetBeans
+### `Login` (Part 1)
+
+| Method | Returns | Description |
+|---|---|---|
+| `checkUserName(String)` | `boolean` | Validates the username format |
+| `checkPasswordComplexity(String)` | `boolean` | Validates password complexity |
+| `checkCellPhoneNumber(String)` | `boolean` | Validates the cell number format using a regular expression |
+| `registerUser(...)` | `String` | Validates all fields and registers the user if valid; returns the relevant status message |
+| `loginUser(String, String)` | `boolean` | Verifies login credentials against the registered details |
+| `returnLoginStatus(boolean)` | `String` | Returns the correct message for a login attempt's outcome |
+
+### `Message` (Part 2)
+
+| Method | Returns | Description |
+|---|---|---|
+| `checkMessageID(String)` | `boolean` | Ensures the Message ID is no more than ten characters |
+| `checkRecipientCell(String)` | `String` | Validates the recipient number (reuses `Login.checkCellPhoneNumber()`) and returns the matching message |
+| `checkMessageLength(String)` | `String` | Checks the message is 250 characters or fewer, otherwise reports how many characters over it is |
+| `createMessageHash(String, int, String)` | `String` | Builds the Message Hash from the ID, message number, and first/last words |
+| `checkMessageIDCreated()` | `String` | Returns the "Message ID generated" confirmation |
+| `sentMessage(String)` | `String` | Handles the send / store / disregard choice and returns the matching message |
+| `storeMessage()` | `void` | Writes the message to `messages.json` |
+| `printMessages()` | `String` | Returns the details of every message sent while the program is running |
+| `returnTotalMessages()` | `int` | Returns the total number of messages sent |
+
+### `Part1POE`
+
+The console application. Handles registration (looping on each field until it is valid), login, and, if login succeeds, the QuickChat menu loop.
+
+## How to Run
+
+**Requirements:** Java JDK 17+, Maven (or NetBeans, which bundles both)
 
 **In NetBeans:**
-1. Open the project ('File + Open Project')
-2. Right-click the project - **Run**
+1. Open the project (`File → Open Project`)
+2. Right-click the project → **Run**
+
+**From the command line:**
+```bash
+mvn compile
+mvn exec:java -Dexec.mainClass="com.mycompany.part1poe.Part1POE"
+```
 
 ## Running the Unit Tests
- In NetBeans: right-click the project - **Test**.
+
+The test suites use **JUnit 5**. Run them with:
+
+```bash
+mvn test
+```
+
+Or in NetBeans: right-click the project → **Test**.
+
+**`LoginTest.java`** verifies:
+- Each validation method (`checkUserName`, `checkPasswordComplexity`, `checkCellPhoneNumber`) against valid and invalid test data
+- `registerUser()`'s exact returned message for each failure case and the success case
+- `loginUser()` and `returnLoginStatus()` for successful and failed logins
+
+**`MessageTest.java`** verifies:
+- Message length: success (`"Message ready to send."`) and failure (reports the number of characters over 250)
+- Recipient number: correctly and incorrectly formatted
+- Message hash: matches the expected format (e.g. `00:0:HITONIGHT`), tested for more than one message
+- Message ID creation message
+- Send, disregard and store outcomes
+
+All test data matches the values specified in the module's assessment rubric.
+
+## Continuous Integration (GitHub Actions)
+
+The workflow in `.github/workflows/maven.yml` runs `mvn test` automatically every time code is pushed to `main` or a pull request is opened against it, so every change is tested before it is merged. The result of each run can be seen under the **Actions** tab of this repository.
+
+New work is done on a separate feature branch and merged into `main` once the tests pass, so `main` always stays in working order.
 
 ## References
 
-[GeeksforGeeks – How to Validate a Phone Number Using Regular Expression](https://www.geeksforgeeks.org/how-to-validate-a-phone-number-using-regular-expression/)
+- The regular expression logic used in `checkCellPhoneNumber()` was adapted from: [GeeksforGeeks – How to Validate a Phone Number Using Regular Expression](https://www.geeksforgeeks.org/how-to-validate-a-phone-number-using-regular-expression/)
+- The approach used in `storeMessage()` to write messages as JSON was based on: [Baeldung – Working with JSON in Java](https://www.baeldung.com/java-json)
