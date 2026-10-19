@@ -1,9 +1,7 @@
-
 name: Java CI with Maven
 
 # Runs the test suite automatically whenever code is pushed or a pull
-# request is opened against the main branch, so every change is tested
-# before it is merged in.
+# request is opened against the main branch, so every change is tested before it is merged in.
 on:
   push:
     branches: [ "main" ]
