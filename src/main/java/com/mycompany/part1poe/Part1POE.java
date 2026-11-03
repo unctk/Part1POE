@@ -102,14 +102,14 @@ public class Part1POE {
         
         //Part 2: users should be able to send messages if they have logged in successfully
         if (loginSuccess) {
-            runQuickChat(input);
+            runQuickChat(input, firstName + " " + lastName);
         }
          
          input.close();
 }
     //Part 2 - Sending Messages.
     //Runs the QuickChat menu loop: lets the user send, view, or quit, capped at the number of messages they choose to enter at the start.
-    private static void runQuickChat (Scanner input) {
+    private static void runQuickChat (Scanner input, String loggedInName) {
         System.out.println();
         System.out.println("Welcome to QuickChat.");
         
