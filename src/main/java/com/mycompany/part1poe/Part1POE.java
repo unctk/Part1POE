@@ -196,5 +196,66 @@ public class Part1POE {
         }
       } 
     }
+    
+    //Part 3 - Stored Messages.
+    // Lets the user work with the stored messages using the arrays in MessageStore. Runs until the user goes back to the main menu
+    private static void runStoredMessagesMenu(Scanner input) {
+       while (true) {
+           System.out.println();
+            System.out.println("--- Stored Messages ---");
+            System.out.println("1) Display the sender and recipient of all stored messages");
+            System.out.println("2) Display the longest stored message");
+            System.out.println("3) Search for a message ID");
+            System.out.println("4) Search for all messages for a recipient");
+            System.out.println("5) Delete a message using its message hash");
+            System.out.println("6) Display a report of all stored messages");
+            System.out.println("7) Back to the main menu");
+            System.out.print("Choose an option: ");
+            String choice = input.nextLine().trim();
+            
+            if (choice.equals("1")) {
+                System.out.print(MessageStore.displaySenderAndRecipient());
+            }
+            else if (choice.equals("2")) {
+                System.out.println(MessageStore.getLongestStoredMessage());
+            }
+            else if (choice.equals("3")) {
+                System.out.print("Enter the message ID: ");
+                String[] found = MessageStore.searchByMessageID(input.nextLine().trim());
+                if (found == null) {
+                    System.out.println("Message ID not found.");
+                }
+                else {
+                    System.out.println("Recipient: " + found[0]);
+                    System.out.println("Message: " + found[1]);
+                }
+            }
+            else if (choice.equals("4")) {
+               System.out.print("Enter the recipient's cell number: ");
+                String[] found = MessageStore.searchByRecipient(input.nextLine().trim());
+                if (found.length == 0) {
+                    System.out.println("No messages found for that recipient."); 
+                }
+                else {
+                    for (String message : found) {
+                        System.out.println(message);
+                    }
+                }
+            }
+            else if (choice.equals("5")) {
+                System.out.print("Enter the message hash: ");
+                System.out.println(MessageStore.deleteByHash(input.nextLine().trim()));
+            }
+            else if (choice.equals("6")) {
+                System.out.print(MessageStore.generateReport(MessageStore.STORED));
+            }
+            else if (choice.equals("7")) {
+                break;
+            }
+            else {
+                System.out.println("Please choose an option from 1 to 7.");
+            }
+       } 
+    }
   }
         
