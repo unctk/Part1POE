@@ -4,11 +4,7 @@
  */
 package com.mycompany.part1poe;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.io.IOException;
-import java.io.FileWriter;
 
 /**
  *
@@ -16,9 +12,6 @@ import java.io.FileWriter;
  */
 public class Message {
     
-    // Keeps every message that was actually chosen to be SENT during this run of the program, so printMessages() can list them and returnTotalMessages() can count them.
-    private static List<Message> sentMessages = new ArrayList<>();
-   
     private String messageID;
     private int messageNumber;
     private String recipient;
@@ -81,15 +74,15 @@ public class Message {
          String idPrefix = messageID.substring(0, 2);
          
          String[] words = messageText.trim().split("\\s+");
-         String firstWord = words[0].replaceAll("[^a-zA-z0-9]", "");
-         String lastWord = words[words.length-1].replaceAll("[^a-zA-z0-9]", "");
+         String firstWord = words[0].replaceAll("[^a-zA-Z0-9]", "");
+         String lastWord = words[words.length-1].replaceAll("[^a-zA-Z0-9]", "");
          
          return idPrefix + ":" + messageNumber + ":" + (firstWord + lastWord).toUpperCase();
      }
     //  Lets the user choose whether to send, store, or disregard the message, and returns the matching confirmation message.
      public String sentMessage(String choice) {
          if (choice.equalsIgnoreCase("send")) {
-            sentMessages.add(this);
+             MessageStore.addMessage(messageID, messageNumber, messageHash, recipient, messageText, MessageStore.SENT);
             return "Message successfully sent.";
         } 
          else if (choice.equalsIgnoreCase("store")) {
@@ -97,6 +90,7 @@ public class Message {
             return "Message successfully stored.";
         } 
          else if (choice.equalsIgnoreCase("disregard")) {
+              MessageStore.addMessage(messageID, messageNumber, messageHash, recipient, messageText, MessageStore.DISREGARDED);
             return "Press 0 to delete the message.";
         } 
          else {
@@ -104,42 +98,24 @@ public class Message {
         }
        }
      
-     //// Own defined storeMessage() method. Appends this message to messages.json as a simple JSON array entry.
-    //  https://www.baeldung.com/java-json
+     // Own defined storeMessage() method. Adds this message to the stored messages array; MessageStore then writes every stored message to the JSON file.
+     // https://www.baeldung.com/java-json
      public void storeMessage() {
-         String json = "{" + "\"messageID\":\"" + messageID + "\","
-                    + "\"messageNumber\":" + messageNumber + ","
-                    + "\"recipient\":\"" + recipient + "\","
-                    + "\"message\":\"" + messageText.replace("\"", "\\\"") + "\","
-                    + "\"messageHash\":\"" + messageHash + "\"" + "}";
-         
-         try (FileWriter writer = new FileWriter("message.json", true)) {
-              writer.write(json + System.lineSeparator());
-         }
-         catch (IOException e) {
-             System.out.println("Could not store message to JSON file: " + e.getMessage());
-         }
+         MessageStore.addMessage(messageID, messageNumber, messageHash, recipient, messageText, MessageStore.STORED); 
      }
-    
      // Returns the details of every message that was sent while the program is running, in the order: Message ID, Message Hash, Recipient, Message.
     public static String printMessages() {
-        StringBuilder sb = new StringBuilder();
-        for (Message m: sentMessages) {
-            sb.append("Message ID: ").append(m.messageID).append("\n");
-            sb.append("Message Hash: ").append(m.messageHash).append("\n");
-            sb.append("Recipient: ").append(m.recipient).append("\n");
-            sb.append("Message: ").append(m.messageText).append("\n\n");
-        }
-        return sb.toString();
+        return MessageStore.generateReport(MessageStore.SENT);
     }
+        
     // Returns the total number of messages sent.
     public static int returnTotalMessages() {
-        return sentMessages.size();
+        return MessageStore.getSentMessages().length;
     }
     
-    // Resets all static state - used between JUnit tests so one test's messages don't leak into another's counts.
+    // Empties all the message arrays - used between JUnit tests so one test's messages don't leak into another's.
     public static void resetForTesting() {
-        sentMessages.clear();
+        MessageStore.reset();
     }
     
     public String getMessageID() {
