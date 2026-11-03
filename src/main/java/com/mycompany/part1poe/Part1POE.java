@@ -113,6 +113,13 @@ public class Part1POE {
         System.out.println();
         System.out.println("Welcome to QuickChat.");
         
+        // Everything sent from here on is recorded against the logged in user.
+        MessageStore.setSender(loggedInName);
+        
+        //Part 3: read the stored messages from the JSON file into the arrays.
+        int loaded = MessageStore.loadStoredMessages();
+        System.out.println(loaded + " stored message(s) loaded from the JSON file.");
+        
         System.out.print("How many messages would you like to enter? ");
         int numMessages = Integer.parseInt(input.nextLine().trim());
         boolean messagesEntered = false;
