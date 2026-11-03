@@ -129,6 +129,7 @@ public class Part1POE {
             System.out.println("1) Send Messages");
             System.out.println("2) Show recently sent messages");
             System.out.println("3) Quit");
+            System.out.println("4) Stored Messages");
             System.out.print("Choose an option: ");
             String choice = input.nextLine().trim();
             
@@ -186,9 +187,12 @@ public class Part1POE {
             System.out.println("Total messages sent: " + Message.returnTotalMessages());
             break;      
         }
+        else if(choice.equals("4")){
+           runStoredMessagesMenu(input); 
+        }
         
         else {
-            System.out.println("Please choose option 1, 2 or 3.");
+            System.out.println("Please choose option 1, 2 or 3 or 4.");
         }
       } 
     }
