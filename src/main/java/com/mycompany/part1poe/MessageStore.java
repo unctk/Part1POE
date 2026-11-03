@@ -84,7 +84,60 @@ public class MessageStore {
             return false;
         }
     
-    
+        messageIDs[totalCount] = id;
+        messageNumbers[totalCount] = number;
+        messageHashes[totalCount] = hash;
+        messageSenders[totalCount] = sender;
+        messageRecipients[totalCount] = recipient;
+        messageTexts[totalCount] = text;
+        messageFlags[totalCount] = flag;
+        totalCount++;
+
+        if (flag.equals(SENT)) {
+            sentMessages[sentCount] = text;
+            sentCount++;
+        } else if (flag.equals(STORED)) {
+            storedMessages[storedCount] = text;
+            storedCount++;
+        } else {
+            disregardedMessages[disregardedCount] = text;
+            disregardedCount++;
+        }
+        return true;
+    }
+
+    // The getters return a copy that only contains the positions in use.
+    public static String[] getSentMessages() {
+        return Arrays.copyOf(sentMessages, sentCount);
+    }
+
+    public static String[] getDisregardedMessages() {
+        return Arrays.copyOf(disregardedMessages, disregardedCount);
+    }
+
+    public static String[] getStoredMessages() {
+        return Arrays.copyOf(storedMessages, storedCount);
+    }
+
+    public static String[] getMessageHashes() {
+        return Arrays.copyOf(messageHashes, totalCount);
+    }
+
+    public static String[] getMessageIDs() {
+        return Arrays.copyOf(messageIDs, totalCount);
+    }
+
+    // Looks through the first "count" positions of an array and returns the
+    // position of the value, or -1 if it is not there.
+    private static int findPosition(String[] array, int count, String value) {
+        for (int i = 0; i < count; i++) {
+            if (array[i].equals(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     
     
     
