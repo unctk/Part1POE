@@ -138,7 +138,83 @@ public class MessageStore {
         return -1;
     }
 
+    // Removes a value from an array by moving every later value one place
+    // to the left. Returns the new count.
+    private static int removeText(String[] array, int count, String value) {
+        int position = findPosition(array, count, value);
+        if (position == -1) {
+            return count;
+        }
+        for (int i = position; i < count - 1; i++) {
+            array[i] = array[i + 1];
+        }
+        return count - 1;
+    }
+
+    // Menu option a: the sender and recipient of every stored message.
+    public static String displaySenderAndRecipient() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < totalCount; i++) {
+            if (messageFlags[i].equals(STORED)) {
+                result.append("Sender: ").append(messageSenders[i])
+                        .append(" | Recipient: ").append(messageRecipients[i])
+                        .append("\n");
+            }
+        }
+        if (result.length() == 0) {
+            return "There are no stored messages.";
+        }
+        return result.toString();
+    }
+
+    // Menu option b: the longest stored message.
+    public static String getLongestStoredMessage() {
+        String longest = "";
+        for (int i = 0; i < storedCount; i++) {
+            if (storedMessages[i].length() > longest.length()) {
+                longest = storedMessages[i];
+            }
+        }
+        if (longest.isEmpty()) {
+            return "There are no stored messages.";
+        }
+        return longest;
+    }
     
+    // Menu option c: searches the message ID array and returns the
+    // recipient (position 0) and message (position 1) at the same position
+    // in the parallel arrays, or null if the ID is not found.
+    public static String[] searchByMessageID(String id) {
+        int position = findPosition(messageIDs, totalCount, id);
+        if (position == -1) {
+            return null;
+        }
+        return new String[]{messageRecipients[position], messageTexts[position]};
+    }
+
+    // Menu option d: every sent or stored message for one recipient.
+    public static String[] searchByRecipient(String recipient) {
+        String[] found = new String[totalCount];
+        int foundCount = 0;
+        for (int i = 0; i < totalCount; i++) {
+            boolean sentOrStored = messageFlags[i].equals(SENT)
+                    || messageFlags[i].equals(STORED);
+            if (sentOrStored && messageRecipients[i].equals(recipient)) {
+                found[foundCount] = messageTexts[i];
+                foundCount++;
+            }
+        }
+        return Arrays.copyOf(found, foundCount);
+    }
+
+    // Menu option e: finds the message with this hash in the hash array and
+    // removes it from every array. If it was a stored message, the JSON file
+    // is updated too.
+    public static String deleteByHash(String hash) {
+        int position = findPosition(messageHashes, totalCount, hash);
+        if (position == -1) {
+            return "Message hash not found.";
+        }
     
     
     
