@@ -6,9 +6,13 @@ package TestClasses;
 
 import com.mycompany.part1poe.Message;
 import com.mycompany.part1poe.MessageStore;
+
 import java.nio.file.Path;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -98,6 +102,119 @@ public class MessageStoreTest {
                 "Expect the hash array to contain the hash of every message");
         assertArrayEquals(expectedIDs, MessageStore.getMessageIDs(),
                 "Expect the ID array to contain the ID of every message");
+    }
+    
+     // --- Display the longest message ---
+
+    @Test
+    public void testDisplayLongestMessage() {
+        String actual = MessageStore.getLongestStoredMessage();
+        assertEquals(MESSAGE_2, actual, "Expect the longest stored message "
+                + "to be message 2");
+    }
+
+    // --- Search for messageID ---
+
+    @Test
+    public void testSearchForMessageID() {
+        String[] actual = MessageStore.searchByMessageID(message4.getMessageID());
+        assertEquals("0838884567", actual[0], "Expect the recipient of "
+                + "message 4 to be returned");
+        assertEquals(MESSAGE_4, actual[1], "Expect the text of message 4 "
+                + "to be returned");
+    }
+
+    @Test
+    public void testSearchForMessageID_NotFound() {
+        assertNull(MessageStore.searchByMessageID("0000000000"),
+                "Expect a message ID that does not exist to return nothing");
+    }
+
+    // --- Search all the messages sent or stored for a recipient ---
+
+    @Test
+    public void testSearchMessagesForRecipient() {
+        String[] expected = {MESSAGE_2, MESSAGE_5};
+        String[] actual = MessageStore.searchByRecipient("+27838884567");
+        assertArrayEquals(expected, actual, "Expect messages 2 and 5 for "
+                + "+27838884567");
+    }
+
+    // --- Delete a message using a message hash ---
+
+    @Test
+    public void testDeleteMessageUsingHash() {
+        String expected = "Message: \"" + MESSAGE_2 + "\" successfully deleted.";
+        String actual = MessageStore.deleteByHash(message2.getMessageHash());
+        assertEquals(expected, actual, "Expect message 2 to be deleted");
+
+        assertArrayEquals(new String[]{MESSAGE_5}, MessageStore.getStoredMessages(),
+                "Expect message 2 to be gone from the stored messages array");
+    }
+
+    @Test
+    public void testDeleteMessageUsingHash_NotFound() {
+        assertEquals("Message hash not found.",
+                MessageStore.deleteByHash("00:0:NOTHING"),
+                "Expect an unknown hash to report that it was not found");
+    }
+
+    // --- Display report ---
+
+    @Test
+    public void testDisplayReportOfSentMessages() {
+        String expected = report(message1) + report(message4);
+        String actual = MessageStore.generateReport(MessageStore.SENT);
+        assertEquals(expected, actual, "Expect the report to list every "
+                + "sent message with its ID, hash, recipient and message");
+    }
+
+    @Test
+    public void testDisplayReportOfStoredMessages() {
+        String expected = report(message2) + report(message5);
+        String actual = MessageStore.generateReport(MessageStore.STORED);
+        assertEquals(expected, actual, "Expect the report to list every "
+                + "stored message");
+    }
+
+    // --- Reading the JSON file into the array ---
+
+    @Test
+    public void testStoredMessagesReadBackFromJSONFile() {
+        // Empty the arrays, as if the program had just been started again.
+        MessageStore.reset();
+        assertEquals(0, MessageStore.getStoredMessages().length);
+
+        int loaded = MessageStore.loadStoredMessages();
+
+        assertEquals(2, loaded, "Expect both stored messages to be loaded");
+        assertArrayEquals(new String[]{MESSAGE_2, MESSAGE_5},
+                MessageStore.getStoredMessages(),
+                "Expect the stored messages array to be filled from the file");
+        assertArrayEquals(new String[]{message2.getMessageHash(), message5.getMessageHash()},
+                MessageStore.getMessageHashes(),
+                "Expect the hashes to be read back from the file too");
+    }
+
+    @Test
+    public void testDeletedMessageIsRemovedFromJSONFile() {
+        MessageStore.deleteByHash(message2.getMessageHash());
+
+        MessageStore.reset();
+        MessageStore.loadStoredMessages();
+
+        assertArrayEquals(new String[]{MESSAGE_5}, MessageStore.getStoredMessages(),
+                "Expect the deleted message to be gone from the file as well");
+    }
+
+    // Builds the report text expected for one message, in the same format
+    // MessageStore.generateReport() uses.
+    private String report(Message message) {
+        return "Message ID: " + message.getMessageID() + "\n"
+                + "Message Hash: " + message.getMessageHash() + "\n"
+                + "Recipient: " + message.getRecipient() + "\n"
+                + "Message: " + message.getMessageText() + "\n"
+                + "Sender: Developer\n\n";
     }
     
 }
