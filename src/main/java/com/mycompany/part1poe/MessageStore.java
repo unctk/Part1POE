@@ -4,6 +4,10 @@
  */
 package com.mycompany.part1poe;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 
 
 /**
@@ -216,7 +220,97 @@ public class MessageStore {
             return "Message hash not found.";
         }
     
-    
+     String text = messageTexts[position];
+        String flag = messageFlags[position];
+
+        // Move every later message one place to the left in every parallel
+        // array, so the gap left by the deleted message is closed.
+        for (int i = position; i < totalCount - 1; i++) {
+            messageIDs[i] = messageIDs[i + 1];
+            messageNumbers[i] = messageNumbers[i + 1];
+            messageHashes[i] = messageHashes[i + 1];
+            messageSenders[i] = messageSenders[i + 1];
+            messageRecipients[i] = messageRecipients[i + 1];
+            messageTexts[i] = messageTexts[i + 1];
+            messageFlags[i] = messageFlags[i + 1];
+        }
+        totalCount--;
+
+        if (flag.equals(SENT)) {
+            sentCount = removeText(sentMessages, sentCount, text);
+        } else if (flag.equals(STORED)) {
+            storedCount = removeText(storedMessages, storedCount, text);
+            saveStoredMessages();
+        } else {
+            disregardedCount = removeText(disregardedMessages, disregardedCount, text);
+        }
+
+        return "Message: \"" + text + "\" successfully deleted.";
+    }
+
+    // Menu option f (and the sent report): the full details of every message
+    // with the given flag.
+    public static String generateReport(String flag) {
+        StringBuilder report = new StringBuilder();
+        for (int i = 0; i < totalCount; i++) {
+            if (messageFlags[i].equals(flag)) {
+                report.append("Message ID: ").append(messageIDs[i]).append("\n");
+                report.append("Message Hash: ").append(messageHashes[i]).append("\n");
+                report.append("Recipient: ").append(messageRecipients[i]).append("\n");
+                report.append("Message: ").append(messageTexts[i]).append("\n");
+                report.append("Sender: ").append(messageSenders[i]).append("\n\n");
+            }
+        }
+        if (report.length() == 0) {
+            return "There are no " + flag.toLowerCase() + " messages.";
+        }
+        return report.toString();
+    }
+
+    // Writes every stored message to the JSON file as a JSON array.
+    //
+    // References (writing text to a file with java.nio, and the JSON format):
+    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html
+    // https://www.baeldung.com/java-json
+    public static void saveStoredMessages() {
+        StringBuilder json = new StringBuilder("[\n");
+        boolean firstEntry = true;
+        for (int i = 0; i < totalCount; i++) {
+            if (messageFlags[i].equals(STORED)) {
+                if (!firstEntry) {
+                    json.append(",\n");
+                }
+                json.append("  {")
+                        .append("\"messageID\":\"").append(escape(messageIDs[i])).append("\",")
+                        .append("\"messageNumber\":").append(messageNumbers[i]).append(",")
+                        .append("\"sender\":\"").append(escape(messageSenders[i])).append("\",")
+                        .append("\"recipient\":\"").append(escape(messageRecipients[i])).append("\",")
+                        .append("\"message\":\"").append(escape(messageTexts[i])).append("\",")
+                        .append("\"messageHash\":\"").append(escape(messageHashes[i])).append("\"")
+                        .append("}");
+                firstEntry = false;
+            }
+        }
+        json.append("\n]\n");
+
+        try {
+            Files.write(Paths.get(storageFile), json.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.out.println("Could not store messages to the JSON file: " + e.getMessage());
+        }
+    }
+
+    // Reads the JSON file back into the arrays as stored messages and
+    // returns how many were loaded. Messages already in the arrays (same
+    // message ID) are not added twice.
+    //
+    // Reference (reading a text file line by line with java.nio):
+    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html
+    public static int loadStoredMessages() {
+        Path file = Paths.get(storageFile);
+        if (!Files.exists(file)) {
+            return 0;
+        }
     
     
 }
