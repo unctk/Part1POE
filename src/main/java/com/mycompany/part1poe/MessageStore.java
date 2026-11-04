@@ -6,7 +6,11 @@ package com.mycompany.part1poe;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -131,8 +135,7 @@ public class MessageStore {
         return Arrays.copyOf(messageIDs, totalCount);
     }
 
-    // Looks through the first "count" positions of an array and returns the
-    // position of the value, or -1 if it is not there.
+    // Looks through the first "count" positions of an array and returns the position of the value, or -1 if it is not there.
     private static int findPosition(String[] array, int count, String value) {
         for (int i = 0; i < count; i++) {
             if (array[i].equals(value)) {
@@ -142,8 +145,7 @@ public class MessageStore {
         return -1;
     }
 
-    // Removes a value from an array by moving every later value one place
-    // to the left. Returns the new count.
+    // Removes a value from an array by moving every later value one place to the left. Returns the new count.
     private static int removeText(String[] array, int count, String value) {
         int position = findPosition(array, count, value);
         if (position == -1) {
@@ -185,8 +187,7 @@ public class MessageStore {
         return longest;
     }
     
-    // Menu option c: searches the message ID array and returns the
-    // recipient (position 0) and message (position 1) at the same position
+    // Menu option c: searches the message ID array and returns the recipient (position 0) and message (position 1) at the same position
     // in the parallel arrays, or null if the ID is not found.
     public static String[] searchByMessageID(String id) {
         int position = findPosition(messageIDs, totalCount, id);
@@ -212,8 +213,7 @@ public class MessageStore {
     }
 
     // Menu option e: finds the message with this hash in the hash array and
-    // removes it from every array. If it was a stored message, the JSON file
-    // is updated too.
+    // removes it from every array. If it was a stored message, the JSON file is updated too.
     public static String deleteByHash(String hash) {
         int position = findPosition(messageHashes, totalCount, hash);
         if (position == -1) {
@@ -223,8 +223,7 @@ public class MessageStore {
      String text = messageTexts[position];
         String flag = messageFlags[position];
 
-        // Move every later message one place to the left in every parallel
-        // array, so the gap left by the deleted message is closed.
+        // Move every later message one place to the left in every parallel array, so the gap left by the deleted message is closed.
         for (int i = position; i < totalCount - 1; i++) {
             messageIDs[i] = messageIDs[i + 1];
             messageNumbers[i] = messageNumbers[i + 1];
@@ -248,8 +247,7 @@ public class MessageStore {
         return "Message: \"" + text + "\" successfully deleted.";
     }
 
-    // Menu option f (and the sent report): the full details of every message
-    // with the given flag.
+    // Menu option f (and the sent report): the full details of every message with the given flag.
     public static String generateReport(String flag) {
         StringBuilder report = new StringBuilder();
         for (int i = 0; i < totalCount; i++) {
@@ -268,7 +266,6 @@ public class MessageStore {
     }
 
     // Writes every stored message to the JSON file as a JSON array.
-    //
     // References (writing text to a file with java.nio, and the JSON format):
     // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html
     // https://www.baeldung.com/java-json
@@ -300,10 +297,8 @@ public class MessageStore {
         }
     }
 
-    // Reads the JSON file back into the arrays as stored messages and
-    // returns how many were loaded. Messages already in the arrays (same
+    // Reads the JSON file back into the arrays as stored messages and returns how many were loaded. Messages already in the arrays (same
     // message ID) are not added twice.
-    //
     // Reference (reading a text file line by line with java.nio):
     // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html
     public static int loadStoredMessages() {
@@ -312,5 +307,93 @@ public class MessageStore {
             return 0;
         }
     
-    
+     List<String> lines;
+        try {
+            lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.out.println("Could not read the JSON file: " + e.getMessage());
+            return 0;
+        }
+
+        int loaded = 0;
+        for (String line : lines) {
+            String entry = line.trim();
+            if (!entry.startsWith("{")) {
+                continue;
+            }
+
+            String id = readText(entry, "messageID");
+            String hash = readText(entry, "messageHash");
+            String recipient = readText(entry, "recipient");
+            String message = readText(entry, "message");
+            String sender = readText(entry, "sender");
+
+            // Skip anything that is missing a field we need, or is already loaded.
+            if (id == null || hash == null || recipient == null || message == null
+                    || findPosition(messageIDs, totalCount, id) != -1) {
+                continue;
+            }
+
+            // Messages stored in Part 2 did not record a sender.
+            if (sender == null) {
+                sender = "Unknown";
+            }
+
+            String number = readNumber(entry, "messageNumber");
+            boolean added = addEntry(id,
+                    number == null ? 0 : Integer.parseInt(number),
+                    hash, sender, recipient, message, STORED);
+            if (added) {
+                loaded++;
+            }
+        }
+        return loaded;
+    }
+
+    // Escapes backslashes and double quotes so a message can sit safely inside a JSON string.
+    private static String escape(String value) {
+        return value.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    // Reads the text value of a key out of one JSON object, undoing the escaping done by escape(). Returns null if the key is missing.
+    private static String readText(String json, String key) {
+        String marker = "\"" + key + "\":\"";
+        int start = json.indexOf(marker);
+        if (start == -1) {
+            return null;
+        }
+
+        StringBuilder value = new StringBuilder();
+        int i = start + marker.length();
+        while (i < json.length()) {
+            char ch = json.charAt(i);
+            if (ch == '\\' && i + 1 < json.length()) {
+                value.append(json.charAt(i + 1));
+                i += 2;
+            } else if (ch == '"') {
+                break;
+            } else {
+                value.append(ch);
+                i++;
+            }
+        }
+        return value.toString();
+    }
+
+    // Reads the number value of a key out of one JSON object.
+    private static String readNumber(String json, String key) {
+        String marker = "\"" + key + "\":";
+        int start = json.indexOf(marker);
+        if (start == -1) {
+            return null;
+        }
+
+        int i = start + marker.length();
+        StringBuilder digits = new StringBuilder();
+        while (i < json.length() && Character.isDigit(json.charAt(i))) {
+            digits.append(json.charAt(i));
+            i++;
+        }
+        return digits.length() == 0 ? null : digits.toString();
+    }   
 }

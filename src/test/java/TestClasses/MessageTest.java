@@ -5,9 +5,12 @@
 package TestClasses;
 
 import com.mycompany.part1poe.Message;
+import com.mycompany.part1poe.MessageStore;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
@@ -16,9 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 public class MessageTest {
     
    @BeforeEach
-    public void setUp() {
-        // Reset static state (sent messages list and the message counter) before every test, so tests don't affect each other.
+    public void setUp(@TempDir Path tempDir) {
+      // Empty the message arrays before every test, so tests don't affect each other, and point the JSON file at a temporary folder so tests never touch the real file.
         Message.resetForTesting();
+        MessageStore.setStorageFile(tempDir.resolve("message.json").toString());
     }
     
     // The message should not be more than 250 characters
