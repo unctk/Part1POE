@@ -1,17 +1,18 @@
-# Part1POE - Registration and Login and Messaging
+# POE - QuickChat: Registration and Login and Messaging
 
 **Student Name:** Thakgalo Maleka
 **Student Number:** ST10511101
-**Module:** PROG5121
+**Module:** PROG5121 | Programming 1A 
 **School:** Rosebank International
 
 ## Overview
- This POE is a console java program that demonstrates user registration and login using
-oop, data validation and decision making.
-Part 1: Registration and Login: a user registers with a username, password and South African cell phone number (each validated), then logs in with the same details.
-Part 2: Sending Messages: once logged in, the user can create, send, store or disregard messages. Each message gets a unique ID and an auto-generated hash, and stored messages are saved to a JSON file.
+ This repository contains my Portfolio of Evidence (POE) for PROG5121. It is a console-based Java application called **QuickChat**, built in three parts:
 
-The business logic is kept separate from the console interface (Login and Message classes vs. the main class), so it can be unit tested directly and run automatically through GitHub Actions.
+- **Part 1 – Registration and Login:** a user registers with a username, password and South African cell phone number (each validated), then logs in with the same details.
+- **Part 2 – Sending Messages:** once logged in, the user can create, send, store or disregard messages. Each message gets a unique ID and an auto-generated hash, and stored messages are saved to a JSON file.
+- **Part 3 – Store Data and Display Task Report:** every message is recorded in arrays, stored messages are read back from the JSON file when the program starts, and a new **Stored Messages** menu lets the user search, delete and report on them.
+
+The business logic is kept separate from the console interface (`Login`, `Message` and `MessageStore` classes vs. the main class), so it can be unit tested directly and run automatically through GitHub Actions.
 
 ## Features
 
@@ -28,12 +29,23 @@ The business logic is kept separate from the console interface (Login and Messag
 -For each message the user can send, store (saved to JSON), or disregard it
 -Full details of each sent message are displayed (Message ID, Message Hash, Recipient, Message)
 -The total number of messages sent is displayed when the user quits
+ **Part 3: Store Data and Display Task Report**
+- Arrays for **sent**, **disregarded** and **stored** messages, plus arrays holding every **message hash** and **message ID**. All of them are filled from what the user does, with nothing hard-coded
+- Stored messages are **read from the JSON file into the stored messages array** when QuickChat starts
+- A fourth main menu option, **Stored Messages**, where the user can:
+  - display the sender and recipient of all stored messages
+  - display the longest stored message
+  - search for a message ID and see the recipient and message
+  - search for all sent or stored messages for a particular recipient
+  - delete a message using its message hash (the JSON file is updated too)
+  - display a report of the full details of all stored messages
    
    ## Testing and Automation
 -JUnit 5 test suites covering every rule in both parts, using the exact test data from the  assessment rubric
 -GitHub Actions workflow that runs all tests automatically on every push
    
    ## Validation Rules
+   
    ## Registration (Part 1)
    **Username**:  Must contain an underscore (_) and be no more than 5 characters long
    **Password**:  Must be at least 8 characters long, and contain at least one capital letter, one number, and one special character 
@@ -55,6 +67,7 @@ Welcome to QuickChat.
 1) Send Messages
 2) Show recently sent messages
 3) Quit
+4) Stored Messages
 ```
 
 | Option | What it does |
@@ -62,6 +75,7 @@ Welcome to QuickChat.
 | **1) Send Messages** | Prompts for a recipient and message, validates them, generates the Message ID and Hash, then asks whether to **send**, **store**, or **disregard** the message |
 | **2) Show recently sent messages** | Still in development; displays *"Coming Soon."* |
 | **3) Quit** | Displays the total number of messages sent and exits |
+| **4) Stored Messages** | Opens the Stored Messages menu (see below) |
 
 The menu keeps running until the user chooses Quit.
 
@@ -71,12 +85,26 @@ The menu keeps running until the user chooses Quit.
 | Store | "Message successfully stored." (and the message is written to `messages.json`) |
 | Disregard | "Press 0 to delete the message." |
 
+### Stored Messages menu (Part 3)
+
+| Option | What it does |
+|---|---|
+| **1** | Shows the sender and recipient of every stored message |
+| **2** | Shows the longest stored message |
+| **3** | Asks for a message ID and shows the recipient and message |
+| **4** | Asks for a recipient's cell number and shows every sent or stored message for them |
+| **5** | Asks for a message hash and deletes that message |
+| **6** | Shows a report with the ID, hash, recipient, message and sender of every stored message |
+| **7** | Goes back to the main menu |
+
 ### Storing messages as JSON
 
-Messages chosen to be stored are appended to a `messages.json` file in the folder the program is run from, one JSON object per message:
+Stored messages are written to a `messages.json` file in the folder the program is run from, as a JSON array with one object per message. The file is read back into the arrays each time the program starts, and is rewritten whenever a stored message is added or deleted:
 
 ```json
-{"messageID":"4832643602","messageNumber":0,"recipient":"+27821234567","message":"Test message","messageHash":"48:0:TESTMESSAGE"}
+[
+  {"messageID":"9860538335","messageNumber":1,"sender":"Kyle Smith","recipient":"+27838884567","message":"Where are you? You are late! I have asked you to be on time.","messageHash":"98:1:WHERETIME"}
+]
 ```
 ## Project Structure
 
@@ -94,12 +122,14 @@ Part1POE/
     │       └── com/mycompany/part1poe/
     │           ├── Login.java       # Part 1: registration & login logic
     │           ├── Message.java     # Part 2: message creation, hashing, sending, storing
+    │           ├── MessageStore.java # Part 3: arrays, search, delete, report, JSON read/write
     │           └── Part1POE.java    # Console application entry point
     └── test/
         └── java/
             └── com/mycompany/part1poe/
                 ├── LoginTest.java   # Part 1 JUnit 5 tests
-                └── MessageTest.java # Part 2 JUnit 5 tests
+                ├── MessageTest.java      # Part 2 JUnit 5 tests
+                └── MessageStoreTest.java # Part 3 JUnit 5 tests
 ```
    ## Class Design
 
@@ -128,9 +158,27 @@ Part1POE/
 | `printMessages()` | `String` | Returns the details of every message sent while the program is running |
 | `returnTotalMessages()` | `int` | Returns the total number of messages sent |
 
+### `MessageStore` (Part 3)
+
+Holds the arrays and everything that works on them. Each array is a plain Java array (for example `String[] sentMessages = new String[100]`) with a counter for how many positions are in use. The message ID, hash, sender, recipient, text and flag arrays are **parallel arrays**: position 0 in each describes the first message, position 1 the second, and so on, so a search in one array (for example the hashes) finds the matching value in another.
+
+| Method | Returns | Description |
+|---|---|---|
+| `addMessage(...)` | `void` | Adds a sent, stored or disregarded message to the arrays (stored messages are also written to the JSON file) |
+| `getSentMessages()`, `getDisregardedMessages()`, `getStoredMessages()` | `String[]` | The message arrays |
+| `getMessageHashes()`, `getMessageIDs()` | `String[]` | The hash and ID arrays |
+| `displaySenderAndRecipient()` | `String` | Sender and recipient of every stored message |
+| `getLongestStoredMessage()` | `String` | The longest stored message |
+| `searchByMessageID(String)` | `String[]` | The recipient and message for an ID, or `null` if not found |
+| `searchByRecipient(String)` | `String[]` | Every sent or stored message for a recipient |
+| `deleteByHash(String)` | `String` | Deletes the message with that hash and confirms it |
+| `generateReport(String)` | `String` | Full details of every message with a given flag |
+| `saveStoredMessages()` | `void` | Writes all stored messages to the JSON file |
+| `loadStoredMessages()` | `int` | Reads the JSON file into the arrays and returns how many were loaded |
+
 ### `Part1POE`
 
-The console application. Handles registration (looping on each field until it is valid), login, and, if login succeeds, the QuickChat menu loop.
+The console application. Handles registration (looping on each field until it is valid), login, and, if login succeeds, the QuickChat menu loop and the Stored Messages menu.
 
 ## How to Run
 
@@ -168,6 +216,15 @@ Or in NetBeans: right-click the project → **Test**.
 - Message ID creation message
 - Send, disregard and store outcomes
 
+**`MessageStoreTest.java`** populates the arrays with the five test messages from the rubric (using the same code the application uses) and verifies:
+- The sent, disregarded and stored arrays, and the hash and ID arrays, are populated correctly
+- The longest stored message is returned
+- Searching by message ID returns the right recipient and message (and nothing for an unknown ID)
+- Searching by recipient returns the sent and stored messages for that recipient
+- Deleting a message by hash removes it and confirms it (and reports an unknown hash)
+- The sent and stored reports list the full details
+- Stored messages are read back from the JSON file, and a deleted message is gone from the file
+
 All test data matches the values specified in the module's assessment rubric.
 
 ## Continuous Integration (GitHub Actions)
@@ -179,4 +236,5 @@ New work is done on a separate feature branch and merged into `main` once the te
 ## References
 
 - The regular expression logic used in `checkCellPhoneNumber()` was adapted from: [GeeksforGeeks – How to Validate a Phone Number Using Regular Expression](https://www.geeksforgeeks.org/how-to-validate-a-phone-number-using-regular-expression/)
-- The approach used in `storeMessage()` to write messages as JSON was based on: [Baeldung – Working with JSON in Java](https://www.baeldung.com/java-json)
+- The approach used in `MessageStore` to write the stored messages as JSON and read them back was based on: [Baeldung – Working with JSON in Java](https://www.baeldung.com/java-json) and the [Oracle `java.nio.file.Files` documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html)
+  
