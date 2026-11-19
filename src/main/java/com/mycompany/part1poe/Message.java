@@ -17,6 +17,7 @@ public class Message {
     private String recipient;
     private String messageText;
     private String messageHash;
+    private static final int MAX_MESSAGE_LENGTH = 250;
     
     public Message(int messageNumber, String recipient, String messageText) {
         this.messageNumber = messageNumber;

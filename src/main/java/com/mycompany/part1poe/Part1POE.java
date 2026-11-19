@@ -11,6 +11,8 @@ import java.util.Scanner;
  */
 public class Part1POE {
 
+    private static boolean messagesEntered;
+
     public static void main(String[] args) {
         //Declarations
        String firstName;
@@ -38,7 +40,7 @@ public class Part1POE {
            System.out.print("Please enter your username: ");
            username = input.nextLine();
            
-             if (login.checkUserName(username)) {
+             if (Login.checkUserName(username)) {
             System.out.println("Username successfully captured.");
               break;
        }
@@ -54,7 +56,7 @@ public class Part1POE {
            System.out.print("Please enter your password: ");
            password = input.nextLine();
            
-           if (login.checkPasswordComplexity(password)) {
+           if (Login.checkPasswordComplexity(password)) {
               System.out.println("Password successfully captured.");
                break;
            }
@@ -69,7 +71,7 @@ public class Part1POE {
            System.out.print("Please enter your South African cell phone number (include +27)" + ", example +27714224567: ");
            cellNumber = input.nextLine();
            
-             if (login.checkCellPhoneNumber(cellNumber)) {
+             if (Login.checkCellPhoneNumber(cellNumber)) {
             System.out.println("Cell phone number successfully captured.");
               break;
             }
@@ -120,9 +122,20 @@ public class Part1POE {
         int loaded = MessageStore.loadStoredMessages();
         System.out.println(loaded + " stored message(s) loaded from the JSON file.");
         
-        System.out.print("How many messages would you like to enter? ");
-        int numMessages = Integer.parseInt(input.nextLine().trim());
-        boolean messagesEntered = false;
+        int numMessages = 0;
+        while (numMessages < 1) {
+            System.out.print("How many messages would you like to enter? ");  
+            try
+            {
+         numMessages = Integer.parseInt(input.nextLine().trim());
+            }
+            catch (NumberFormatException e) {
+                numMessages = 0;
+            }
+        if (numMessages < 1) {
+            System.out.println("Please enter a whole number of 1 or more.");
+        }
+     }
     
         while (true) {
             System.out.println();
@@ -160,12 +173,13 @@ public class Part1POE {
              
              
              // Send/ Store/ Disregard
-            System.out.println("Send Message");
-            System.out.println("Disregard Message");
-            System.out.println("Store Message to send later");
-            System.out.print("Choose an option (send/store/disregard): ");
-             String sendChoice = input.nextLine().trim();
-             
+             String sendChoice = "";
+               while (!sendChoice.equalsIgnoreCase("send") && !sendChoice.equalsIgnoreCase("store")
+                 && !sendChoice.equalsIgnoreCase("disregard")) {
+                 System.out.print("Choose an option (send/store/disregard): ");
+                 sendChoice = input.nextLine().trim();
+    }
+            
              System.out.println(message.sentMessage(sendChoice));
              
              if (sendChoice.equalsIgnoreCase("send")) {
