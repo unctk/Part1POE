@@ -12,11 +12,11 @@ import java.util.Random;
  */
 public class Message {
     
-    private String messageID;
-    private int messageNumber;
-    private String recipient;
-    private String messageText;
-    private String messageHash;
+    private final String messageID;
+    private final int messageNumber;
+    private final String recipient;
+    private final String messageText;
+    private final String messageHash;
     private static final int MAX_MESSAGE_LENGTH = 250;
     
     public Message(int messageNumber, String recipient, String messageText) {

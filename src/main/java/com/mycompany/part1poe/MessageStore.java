@@ -33,23 +33,23 @@ public class MessageStore {
     
    // The three arrays the rubric asks for. Each one holds the text of the messages that were sent, disregarded or stored, and has a counter that
    // says how many of its positions are in use
-    private static String[] sentMessages = new String[MAX_MESSAGES];
+    private static final String[] sentMessages = new String[MAX_MESSAGES];
     private static int sentCount = 0;
-    private static String[] disregardedMessages = new String[MAX_MESSAGES];
+    private static final String[] disregardedMessages = new String[MAX_MESSAGES];
     private static int disregardedCount = 0;
-    private static String[] storedMessages = new String[MAX_MESSAGES];
+    private static final String[] storedMessages = new String[MAX_MESSAGES];
     private static int storedCount = 0;
     
     // Parallel arrays: position 0 in every one of these describes the first message, position 1 the second, and so on. This lets a search in one
     // array (e.g. the hashes) find the matching value in another (e.g. the message text). The message ID and message hash arrays hold the ID and
     // hash of EVERY message, whatever its flag.
-    private static String[] messageIDs = new String[MAX_MESSAGES];
-    private static String[] messageHashes = new String[MAX_MESSAGES];
-    private static int[] messageNumbers = new int[MAX_MESSAGES];
-    private static String[] messageSenders = new String[MAX_MESSAGES];
-    private static String[] messageRecipients = new String[MAX_MESSAGES];
-    private static String[] messageTexts = new String[MAX_MESSAGES];
-    private static String[] messageFlags = new String[MAX_MESSAGES];
+    private static final String[] messageIDs = new String[MAX_MESSAGES];
+    private static final String[] messageHashes = new String[MAX_MESSAGES];
+    private static final int[] messageNumbers = new int[MAX_MESSAGES];
+    private static final String[] messageSenders = new String[MAX_MESSAGES];
+    private static final String[] messageRecipients = new String[MAX_MESSAGES];
+    private static final String[] messageTexts = new String[MAX_MESSAGES];
+    private static final String[] messageFlags = new String[MAX_MESSAGES];
     private static int totalCount = 0;
     
     // The logged in user, recorded as the sender of every new message.
