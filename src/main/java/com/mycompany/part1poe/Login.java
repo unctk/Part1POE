@@ -86,7 +86,11 @@ public class Login {
        this.cellNumber = cellNumber;
        this.registered = true;
        
-       return "Username successfully captured.\n" + "Password successfully captured.\n" + "Cell number successfully captured.\n" + "Registration successful!";
+       return """
+              Username successfully captured.
+              Password successfully captured.
+              Cell number successfully captured.
+              Registration successful!""";
           }
           
           //verifies if entered username and password match from when registerUser succceede

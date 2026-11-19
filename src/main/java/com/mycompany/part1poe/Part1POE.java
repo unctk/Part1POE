@@ -71,7 +71,7 @@ public class Part1POE {
            System.out.print("Please enter your South African cell phone number (include +27)" + ", example +27714224567: ");
            cellNumber = input.nextLine();
            
-             if (login.checkCellPhoneNumber(cellNumber)) {
+             if (Login.checkCellPhoneNumber(cellNumber)) {
             System.out.println("Cell phone number successfully captured.");
               break;
             }
