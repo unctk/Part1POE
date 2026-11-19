@@ -1,10 +1,10 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
+
 package com.mycompany.part1poe;
 
 import java.util.Scanner;
-
 /**
  *
  * @author Student
@@ -15,118 +15,128 @@ public class Part1POE {
 
     public static void main(String[] args) {
         //Declarations
-        String firstName;
-        String lastName;
-        String username;
-        String password;
-        String cellNumber;
+       String firstName;
+       String lastName;
+       String username;
+       String password;
+       String cellNumber;
 
-        //Scanner input = new Scanner (); 
-        Scanner input = new Scanner(System.in);
-        Login login = new Login();
-
-        // Ask for users first name and last name
-        System.out.print("Please enter your first name: ");
-        firstName = input.nextLine();
-
-        System.out.print("Please enter your last name: ");
-        lastName = input.nextLine();
-
-        //username validation
+             
+      //Scanner input = new Scanner (); 
+       Scanner input = new Scanner(System.in);
+       Login login = new Login();
+       
+       
+       // Ask for users first name and last name
+       System.out.print("Please enter your first name: ");
+       firstName = input.nextLine();
+       
+       System.out.print("Please enter your last name: ");
+       lastName = input.nextLine();
+       
+       
+       //username validation
+       while (true) {
+           System.out.print("Please enter your username: ");
+           username = input.nextLine();
+           
+             if (Login.checkUserName(username)) {
+            System.out.println("Username successfully captured.");
+              break;
+       }
+             else {
+            System.out.println("Username is not correctly formatted; please "+ "ensure that your username contains an underscore and "+ "is no more than five characters in length.");
+                               
+            System.out.println("");
+       }
+             
+    }
+       //password validation
+       while (true) {
+           System.out.print("Please enter your password: ");
+           password = input.nextLine();
+           
+           if (Login.checkPasswordComplexity(password)) {
+              System.out.println("Password successfully captured.");
+               break;
+           }
+           else {
+               System.out.println("Password is not correctly formatted; please " + "ensure that the password contains at least eight characters, " + " a capital letter, a number, and a special character.");
+               System.out.println();
+              
+           }
+       }
+       //Cell phone number validation
         while (true) {
-            System.out.print("Please enter your username: ");
-            username = input.nextLine();
-
-            if (Login.checkUserName(username)) {
-                System.out.println("Username successfully captured.");
-                break;
-            } else {
-                System.out.println("Username is not correctly formatted; please " + "ensure that your username contains an underscore and " + "is no more than five characters in length.");
-
-                System.out.println("");
+           System.out.print("Please enter your South African cell phone number (include +27)" + ", example +27714224567: ");
+           cellNumber = input.nextLine();
+           
+             if (login.checkCellPhoneNumber(cellNumber)) {
+            System.out.println("Cell phone number successfully captured.");
+              break;
             }
-
-        }
-        //password validation
-        while (true) {
-            System.out.print("Please enter your password: ");
-            password = input.nextLine();
-
-            if (Login.checkPasswordComplexity(password)) {
-                System.out.println("Password successfully captured.");
-                break;
-            } else {
-                System.out.println("Password is not correctly formatted; please " + "ensure that the password contains at least eight characters, " + " a capital letter, a number, and a special character.");
-                System.out.println();
-
-            }
-        }
-        //Cell phone number validation
-        while (true) {
-            System.out.print("Please enter your South African cell phone number (include +27)" + ", example +27714224567: ");
-            cellNumber = input.nextLine();
-
-            if (Login.checkCellPhoneNumber(cellNumber)) {
-                System.out.println("Cell phone number successfully captured.");
-                break;
-            } else {
-                System.out.println("Cell phone number is incorrectly formatted or does not contain international code." + "Try again");
-
-            }
+             
+             else {
+            System.out.println("Cell phone number is incorrectly formatted or does not contain international code." + "Try again");
+            
+            }   
         }
         //Storing of details against Login class
         String regResult = login.registerUser(firstName, lastName, username, password, cellNumber);
-
+        
         System.out.println();
         System.out.print(regResult);
-
+        
+        
         //user must use same username and password to login
-        System.out.println();
+         System.out.println();
         System.out.println("-Login-");
-
-        System.out.print("Please enter your username: ");
-        String loginUsername = input.nextLine();
-
+        
+        
+         System.out.print("Please enter your username: ");
+           String loginUsername = input.nextLine();
+           
         System.out.print("Please enter your password: ");
-        String loginPassword = input.nextLine();
-
-        boolean loginSuccess = login.loginUser(loginUsername, loginPassword);
-        System.out.println(login.returnLoginStatus(loginSuccess));
-
+           String loginPassword = input.nextLine();
+           
+           boolean loginSuccess =login.loginUser(loginUsername, loginPassword); 
+         System.out.println(login.returnLoginStatus(loginSuccess));
+        
         //Part 2: users should be able to send messages if they have logged in successfully
         if (loginSuccess) {
             runQuickChat(input, firstName + " " + lastName);
         }
-
-        input.close();
-    }
-
+         
+         input.close();
+}
     //Part 2 - Sending Messages.
     //Runs the QuickChat menu loop: lets the user send, view, or quit, capped at the number of messages they choose to enter at the start.
-    private static void runQuickChat(Scanner input, String loggedInName) {
+    private static void runQuickChat (Scanner input, String loggedInName) {
         System.out.println();
         System.out.println("Welcome to QuickChat.");
-
+        
         // Everything sent from here on is recorded against the logged in user.
         MessageStore.setSender(loggedInName);
-
+        
         //Part 3: read the stored messages from the JSON file into the arrays.
         int loaded = MessageStore.loadStoredMessages();
         System.out.println(loaded + " stored message(s) loaded from the JSON file.");
-
+        
         int numMessages = 0;
         while (numMessages < 1) {
-            System.out.print("How many messages would you like to enter? ");
-            try {
-                numMessages = Integer.parseInt(input.nextLine().trim());
-            } catch (NumberFormatException e) {
+            System.out.print("How many messages would you like to enter? ");  
+            try
+            {
+         numMessages = Integer.parseInt(input.nextLine().trim());
+            }
+            catch (NumberFormatException e) {
                 numMessages = 0;
             }
-            if (numMessages < 1) {
-                System.out.println("Please enter a whole number of 1 or more.");
-            }
+        if (numMessages < 1) {
+            System.out.println("Please enter a whole number of 1 or more.");
         }
-
+     }
+    
         while (true) {
             System.out.println();
             System.out.println("1) Send Messages");
@@ -135,71 +145,77 @@ public class Part1POE {
             System.out.println("4) Stored Messages");
             System.out.print("Choose an option: ");
             String choice = input.nextLine().trim();
-
-            if (choice.equals("1")) {
-                if (messagesEntered) {
-                    System.out.println("You have already entered your " + "chosen number of messages.");
-                    continue;
-                }
-
-                // The for loop counter (i) is used as the message number, so it increments each time the loop runs.
+            
+        if (choice.equals("1")) {
+            if (messagesEntered ) {
+              System.out.println("You have already entered your "  + "chosen number of messages.");
+              continue;
+            }
+            
+             // The for loop counter (i) is used as the message number, so it increments each time the loop runs.
                 for (int i = 0; i < numMessages; i++) {
                     System.out.println();
                     System.out.println("Message " + (i + 1) + " of " + numMessages);
-
-                    // Recipient
-                    // Checked and reported, but does not block the user from continuing - the message can still be created, sent, stored or disregarded either way.
-                    System.out.print("Enter recipient cell number: ");
-                    String recipient = input.nextLine();
-                    System.out.println(Message.checkRecipientCell(recipient));
-
-                    //Message text
-                    System.out.print("Enter your message: ");
-                    String messageText = input.nextLine();
-                    System.out.println(Message.checkMessageLength(messageText));
-
-                    Message message = new Message(i, recipient, messageText);
-                    System.out.println(message.checkMessageIDCreated());
-
-                    // Send/ Store/ Disregard
-                    String sendChoice = "";
-                    while (!sendChoice.equalsIgnoreCase("send") && !sendChoice.equalsIgnoreCase("store")
-                            && !sendChoice.equalsIgnoreCase("disregard")) {
-                        System.out.print("Choose an option (send/store/disregard): ");
-                        sendChoice = input.nextLine().trim();
-                    }
-
-                    System.out.println(message.sentMessage(sendChoice));
-
-                    if (sendChoice.equalsIgnoreCase("send")) {
-                        System.out.println();
-                        System.out.println("Message ID: " + message.getMessageID());
-                        System.out.println("Message Hash: " + message.getMessageHash());
-                        System.out.println("Recipient: " + message.getRecipient());
-                        System.out.println("Message: " + message.getMessageText());
-                    }
-                }
-                messagesEntered = true;
-            } else if (choice.equals("2")) {
-                System.out.println("Coming Soon.");
-
-            } else if (choice.equals("3")) {
-                System.out.println();
-                System.out.println("Total messages sent: " + Message.returnTotalMessages());
-                break;
-            } else if (choice.equals("4")) {
-                runStoredMessagesMenu(input);
-            } else {
-                System.out.println("Please choose option 1, 2 or 3 or 4.");
-            }
-        }
+            
+            // Recipient
+            // Checked and reported, but does not block the user from continuing - the message can still be created, sent, stored or disregarded either way.
+            System.out.print("Enter recipient cell number: ");
+             String recipient = input.nextLine();
+             System.out.println(Message.checkRecipientCell(recipient));
+             
+             //Message text
+             System.out.print("Enter your message: ");
+             String messageText = input.nextLine();
+             System.out.println(Message.checkMessageLength(messageText));
+             
+             Message message = new Message (i, recipient, messageText);
+             System.out.println(message.checkMessageIDCreated());
+             
+             
+             // Send/ Store/ Disregard
+             String sendChoice = "";
+               while (!sendChoice.equalsIgnoreCase("send") && !sendChoice.equalsIgnoreCase("store")
+                 && !sendChoice.equalsIgnoreCase("disregard")) {
+                 System.out.print("Choose an option (send/store/disregard): ");
+                 sendChoice = input.nextLine().trim();
     }
-
+            
+             System.out.println(message.sentMessage(sendChoice));
+             
+             if (sendChoice.equalsIgnoreCase("send")) {
+                    System.out.println();
+                    System.out.println("Message ID: " + message.getMessageID());
+                    System.out.println("Message Hash: " + message.getMessageHash());
+                    System.out.println("Recipient: " + message.getRecipient());
+                    System.out.println("Message: " + message.getMessageText());
+                }
+             } 
+                messagesEntered = true;
+        }
+        else if (choice.equals("2")){
+            System.out.println("Coming Soon.");
+            
+        }
+        else if (choice.equals("3")) {
+            System.out.println();
+            System.out.println("Total messages sent: " + Message.returnTotalMessages());
+            break;      
+        }
+        else if(choice.equals("4")){
+           runStoredMessagesMenu(input); 
+        }
+        
+        else {
+            System.out.println("Please choose option 1, 2 or 3 or 4.");
+        }
+      } 
+    }
+    
     //Part 3 - Stored Messages.
     // Lets the user work with the stored messages using the arrays in MessageStore. Runs until the user goes back to the main menu
     private static void runStoredMessagesMenu(Scanner input) {
-        while (true) {
-            System.out.println();
+       while (true) {
+           System.out.println();
             System.out.println("--- Stored Messages ---");
             System.out.println("1) Display the sender and recipient of all stored messages");
             System.out.println("2) Display the longest stored message");
@@ -210,40 +226,50 @@ public class Part1POE {
             System.out.println("7) Back to the main menu");
             System.out.print("Choose an option: ");
             String choice = input.nextLine().trim();
-
+            
             if (choice.equals("1")) {
                 System.out.print(MessageStore.displaySenderAndRecipient());
-            } else if (choice.equals("2")) {
+            }
+            else if (choice.equals("2")) {
                 System.out.println(MessageStore.getLongestStoredMessage());
-            } else if (choice.equals("3")) {
+            }
+            else if (choice.equals("3")) {
                 System.out.print("Enter the message ID: ");
                 String[] found = MessageStore.searchByMessageID(input.nextLine().trim());
                 if (found == null) {
                     System.out.println("Message ID not found.");
-                } else {
+                }
+                else {
                     System.out.println("Recipient: " + found[0]);
                     System.out.println("Message: " + found[1]);
                 }
-            } else if (choice.equals("4")) {
-                System.out.print("Enter the recipient's cell number: ");
+            }
+            else if (choice.equals("4")) {
+               System.out.print("Enter the recipient's cell number: ");
                 String[] found = MessageStore.searchByRecipient(input.nextLine().trim());
                 if (found.length == 0) {
-                    System.out.println("No messages found for that recipient.");
-                } else {
+                    System.out.println("No messages found for that recipient."); 
+                }
+                else {
                     for (String message : found) {
                         System.out.println(message);
                     }
                 }
-            } else if (choice.equals("5")) {
+            }
+            else if (choice.equals("5")) {
                 System.out.print("Enter the message hash: ");
                 System.out.println(MessageStore.deleteByHash(input.nextLine().trim()));
-            } else if (choice.equals("6")) {
+            }
+            else if (choice.equals("6")) {
                 System.out.print(MessageStore.generateReport(MessageStore.STORED));
-            } else if (choice.equals("7")) {
+            }
+            else if (choice.equals("7")) {
                 break;
-            } else {
+            }
+            else {
                 System.out.println("Please choose an option from 1 to 7.");
             }
-        }
+       } 
     }
-}
+  }
+        
